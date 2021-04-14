@@ -948,6 +948,7 @@ private[spark] class SparkSubmit extends Logging {
     }
 
     try {
+      logInfo("start")
       app.start(childArgs.toArray, sparkConf)
     } catch {
       case t: Throwable =>
