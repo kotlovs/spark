@@ -953,10 +953,13 @@ private[spark] class SparkSubmit extends Logging {
       case t: Throwable =>
         throw findCause(t)
     } finally {
-      try {
-        SparkContext.getActive.foreach(_.stop())
-      } catch {
-        case e: Throwable => logError(s"Failed to close SparkContext: $e")
+      if (!isShell(args.primaryResource) && !isSqlShell(args.mainClass) &&
+        !isThriftServer(args.mainClass)) {
+        try {
+          SparkContext.getActive.foreach(_.stop())
+        } catch {
+          case e: Throwable => logError(s"Failed to close SparkContext: $e")
+        }
       }
     }
   }
